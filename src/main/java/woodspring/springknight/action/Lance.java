@@ -17,13 +17,21 @@ import woodspring.springknight.model.FlyDataList;
 public class Lance {
 	private final static Logger logger = LoggerFactory.getLogger(Lance.class);
 	
-	private String domeUri = "http://localhost:9090/dome";
+	private String domeUri = "http://localhost:9090/dome?num={num}";
 	private RestTemplate restTemplate = new RestTemplate();
-	
-	public List<FlyData> strike() {
-		Map<String, Object> params = new HashMap<>(2);
-	    params.put("num", "200");
-		FlyData[] retObj =  restTemplate.getForObject(domeUri, FlyData[].class, params);
+	private int number = 200;
+	private int numString = 900;
+	public List<FlyData> strike(String numStr) {
+		Map<String, String> params = new HashMap<>(1);
+	    params.put("num", Integer.valueOf( number).toString());
+	    FlyData[] retObj = null;
+	    try {
+	    	retObj =  restTemplate.getForObject(domeUri, FlyData[].class, numStr);
+	    } catch ( Exception ex) {
+	    	logger.info( "Exception:"+ ex.getMessage());
+	    	return null;
+	    }
+		//logger.info("uri:{}, params:{} response zise:{}", domeUri, params, retObj.length);
 		//FlyDataList retObj =  restTemplate.getForObject(domeUri, FlyDataList.class, params);
 		return Arrays.asList( retObj);
 		

@@ -17,8 +17,9 @@ public class KnightsController {
 	KnightService knight;
 	
 	@GetMapping("/work")
-	public List<FlyData> work(@RequestParam(value="action", required = false, defaultValue="100") String action) {
-		return knight.action( Integer.valueOf(action));
+	public List<String> work(@RequestParam(value="times", required = true, defaultValue="50") String times,
+			@RequestParam(value="action", required = false, defaultValue="1000") String action) {
+		return knight.actionLoop(Integer.valueOf(times),  Integer.valueOf(action));
 		
 	}
 
