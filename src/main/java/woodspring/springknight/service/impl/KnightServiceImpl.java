@@ -25,6 +25,7 @@ public class KnightServiceImpl implements KnightService {
 	public List<String> actionLoop(int times, int action) {
 		// TODO Auto-generated method stub
 		StringBuffer strB = new StringBuffer();
+		logger.info("START");
 		var resultStr = IntStream.rangeClosed( 1,  times).mapToObj( item -> {
 			List<FlyData> ret = action( action);
 			if (ret == null) {
