@@ -2,24 +2,31 @@ package woodspring.springknight.service.impl;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import woodspring.springknight.action.Lance;
+import woodspring.springknight.action.MaceFeignClient;
 import woodspring.springknight.model.FlyData;
 import woodspring.springknight.service.KnightService;
 
 
 @Service
+@Qualifier("KnightServiceImplAction")
 public class KnightServiceImpl implements KnightService {
 	private final static Logger logger = LoggerFactory.getLogger(KnightServiceImpl.class );
 	@Autowired
 	Lance lance;
+	
+	@Autowired 
+	MaceFeignClient maceFeignClient;
 
 	@Override
 	public List<String> actionLoop(int times, int action) {
@@ -60,6 +67,26 @@ public class KnightServiceImpl implements KnightService {
 		  public int compare(FlyData fd1, FlyData fd2) {
 		    return fd2.getpTime().compareTo(fd1.getpTime());
 		  }
-		}; 
+		};
+
+	@Override
+	public List<String> swingMace(int times) {
+		StringBuffer strBuf = new StringBuffer();
+		List<CompletableFuture<String>> listOfRe =  IntStream.range(1, times)
+														.mapToObj( pId -> CompletableFuture.supplyAsync(
+																() -> maceFeignClient.doSimpleActionTime( pId, times) ))
+				.collect( Collectors.toList());
+		
+		List<String> retStr = listOfRe.stream().map(CompletableFuture::join)
+						.collect( Collectors.toList());
+
+		return retStr;
+	} 
+	
+	
+	public String swingMaceOnce() {
+		var Str = maceFeignClient.doSimpleActionTime(1);
+		return Str;
+	} 
 
 }

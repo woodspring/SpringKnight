@@ -22,5 +22,12 @@ public class KnightsController {
 		return knight.actionLoop(Integer.valueOf(times),  Integer.valueOf(action));
 		
 	}
+	
+	@GetMapping("/mace")
+	public String swingMace(@RequestParam(value="times", required = true, defaultValue="50") String times,
+			@RequestParam(value="action", required = false, defaultValue="1000") String action) {
+		return knight.swingMace( 119);
+		
+	}
 
 }
